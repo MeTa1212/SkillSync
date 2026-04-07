@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SkillSync</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0d1117;
+  --bg2:#111827;
+  --glass:rgba(255,255,255,0.06);
+  --glass-2:rgba(255,255,255,0.09);
+  --card:rgba(17,24,39,0.72);
+  --border:rgba(255,255,255,0.10);
+
+  --ink:#f5f7fb;
+  --ink2:#c6ceda;
+  --ink3:#8d98a8;
+
+  --accent:#5ee7a2;
+  --accent-2:#2dd4bf;
+  --accent-light:rgba(94,231,162,0.12);
+  --accent-dim:#7ef0b4;
+
+  --warn:#ff7a7a;
+  --warn-light:rgba(255,122,122,0.12);
+
+  --yellow:#f6c76a;
+  --yellow-light:rgba(246,199,106,0.12);
+}
+
+body{
+  background:
+    radial-gradient(circle at 15% 15%, rgba(94,231,162,0.10), transparent 22%),
+    radial-gradient(circle at 85% 10%, rgba(45,212,191,0.10), transparent 20%),
+    radial-gradient(circle at 50% 100%, rgba(99,102,241,0.10), transparent 28%),
+    linear-gradient(135deg, #0b0f14 0%, #0f1722 45%, #121a27 100%);
+  font-family:'Outfit',sans-serif;
+  color:var(--ink);
+  min-height:100vh;
+  padding:0 0 3rem;
+}
+
+.header{
+  padding:2.5rem 2rem 1.5rem;
+  display:flex;
+  align-items:flex-end;
+  gap:1rem;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  max-width:1180px;
+  margin:0 auto;
+}
+.header-icon{
+  width:48px;
+  height:48px;
+  background:linear-gradient(135deg, rgba(94,231,162,0.18), rgba(45,212,191,0.18));
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  backdrop-filter:blur(14px);
+  box-shadow:
+    0 8px 28px rgba(0,0,0,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.header-icon svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.header-text h1{
+  font-family:'Sora',sans-serif;
+  font-size:2rem;
+  font-weight:700;
+  letter-spacing:-0.04em;
+  color:#f9fbff;
+  line-height:1.05;
+}
+.header-text p{
+  font-size:13px;
+  color:var(--ink3);
+  margin-top:5px;
+  font-weight:400;
+}
+
+.main{
+  padding:2rem;
+  max-width:1180px;
+  margin:0 auto;
+  display:grid;
+  gap:1.5rem;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:22px;
+  overflow:visible;
+  backdrop-filter:blur(18px);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.30),
+    inset 0 1px 0 rgba(255,255,255,0.05),
+    inset 0 -1px 0 rgba(255,255,255,0.02);
+}
+.card-header{
+  padding:1rem 1.25rem 0.85rem;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.card-header .step{
+  width:22px;height:22px;
+  background:linear-gradient(135deg, #46d695, #28c7b2);
+  color:#06110d;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:700;
+  flex-shrink:0;
+}
+.card-header h2{
+  font-size:14px;
+  font-weight:600;
+  color:#f7fbff;
+  letter-spacing:-0.01em;
+}
+.card-body{padding:1.35rem}
+
+textarea{
+  width:100%;
+  height:160px;
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;
+  padding:0.95rem;
+  font-family:'Outfit',sans-serif;
+  font-size:13.5px;
+  color:var(--ink);
+  background:rgba(255,255,255,0.03);
+  resize:vertical;
+  line-height:1.6;
+  outline:none;
+  transition:all 0.18s ease;
+  backdrop-filter:blur(8px);
+}
+textarea:focus{
+  border-color:rgba(94,231,162,0.45);
+  background:rgba(255,255,255,0.05);
+  box-shadow:0 0 0 4px rgba(94,231,162,0.08);
+}
+textarea::placeholder{color:var(--ink3)}
+
+.tab-toggle{
+  display:flex;
+  gap:0;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:12px;
+  padding:4px;
+  margin-bottom:1rem;
+  width:fit-content;
+}
+.tab-btn{
+  padding:7px 16px;
+  border:none;
+  background:transparent;
+  border-radius:10px;
+  font-family:'Outfit',sans-serif;
+  font-size:13px;
+  font-weight:500;
+  color:var(--ink3);
+  cursor:pointer;
+  transition:all 0.18s ease;
+}
+.tab-btn.active{
+  background:rgba(255,255,255,0.10);
+  color:#fff;
+  box-shadow:
+    0 8px 22px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+.drop-zone{
+  border:1.5px dashed rgba(255,255,255,0.12);
+  border-radius:16px;
+  padding:2.8rem 1rem;
+  text-align:center;
+  cursor:pointer;
+  transition:all 0.2s ease;
+  background:rgba(255,255,255,0.03);
+  backdrop-filter:blur(10px);
+}
+.drop-zone:hover,.drop-zone.dragover{
+  border-color:rgba(94,231,162,0.45);
+  background:rgba(94,231,162,0.08);
+  transform:translateY(-1px);
+}
+.drop-zone.disabled{
+  opacity:0.45;
+  cursor:not-allowed;
+  pointer-events:none;
+}
+.drop-zone .dz-icon{font-size:28px;margin-bottom:8px}
+.drop-zone .dz-title{font-size:13.8px;font-weight:500;color:#f3f7fb;margin-bottom:4px}
+.drop-zone .dz-sub{font-size:12px;color:var(--ink3)}
+.drop-zone .dz-sub span{color:var(--accent);font-weight:500;cursor:pointer}
+
+.file-success{
+  display:none;
+  align-items:center;
+  gap:10px;
+  padding:0.9rem 1rem;
+  background:rgba(94,231,162,0.10);
+  border:1px solid rgba(94,231,162,0.18);
+  border-radius:14px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.file-success .fs-icon{font-size:18px}
+.file-success .fs-name{font-size:13px;font-weight:500;color:#b7ffd6;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-success .fs-clear{
+  font-size:12px;
+  color:var(--ink2);
+  cursor:pointer;
+  padding:5px 10px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.05);
+  font-family:'Outfit',sans-serif;
+}
+.file-success .fs-clear:hover{color:var(--warn)}
+
+.job-role-top{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
+.role-count{font-size:12px;color:var(--ink3);font-family:'DM Mono',monospace}
+
+.role-search-wrap{position:relative;width:100%;max-width:340px}
+.role-search{
+  width:100%;
+  padding:0.82rem 0.95rem 0.82rem 2.6rem;
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;
+  background:rgba(255,255,255,0.04);
+  font-family:'Outfit',sans-serif;
+  font-size:13.5px;
+  color:var(--ink);
+  outline:none;
+  transition:all 0.18s ease;
+  backdrop-filter:blur(10px);
+}
+.role-search:focus{
+  border-color:rgba(94,231,162,0.35);
+  background:rgba(255,255,255,0.06);
+  box-shadow:0 0 0 4px rgba(94,231,162,0.06);
+}
+.role-search::placeholder{color:var(--ink3)}
+.role-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--ink3);pointer-events:none}
+
+.job-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:14px;
+  max-height:360px;
+  overflow-y:auto;
+  padding:14px 6px 8px;
+  margin-top:-4px;
+}
+.job-grid::-webkit-scrollbar{width:8px}
+.job-grid::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:20px}
+.job-grid::-webkit-scrollbar-track{background:transparent}
+
+.job-btn{
+  padding:0.95rem 0.9rem;
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:18px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  cursor:pointer;
+  text-align:left;
+  font-family:'Outfit',sans-serif;
+  transition:all 0.22s cubic-bezier(.22,1,.36,1);
+  display:flex;
+  flex-direction:column;
+  gap:0.5rem;
+  min-height:116px;
+  position:relative;
+  overflow:hidden;
+  backdrop-filter:blur(14px);
+  box-shadow:
+    0 12px 26px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.05),
+    inset 0 -1px 0 rgba(255,255,255,0.02);
+}
+.job-btn::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,0.05), transparent 45%);
+  pointer-events:none;
+}
+.job-btn::after{
+  content:'';
+  position:absolute;
+  inset:auto -20px -26px auto;
+  width:84px;
+  height:84px;
+  background:radial-gradient(circle, rgba(94,231,162,0.14), transparent 72%);
+  border-radius:50%;
+  pointer-events:none;
+}
+.job-btn:hover{
+  border-color:rgba(94,231,162,0.26);
+  transform:translateY(-6px) scale(1.01);
+  box-shadow:
+    0 18px 34px rgba(0,0,0,0.26),
+    0 0 0 1px rgba(94,231,162,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.job-btn.selected{
+  border-color:rgba(94,231,162,0.42);
+  background:linear-gradient(180deg, rgba(94,231,162,0.12), rgba(94,231,162,0.06));
+  box-shadow:
+    0 20px 38px rgba(0,0,0,0.28),
+    0 0 0 1px rgba(94,231,162,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.07);
+}
+.job-btn.selected .job-name{color:#d8ffe9}
+.job-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.job-icon{font-size:23px;line-height:1}
+.job-badge{
+  font-size:10.5px;
+  font-family:'DM Mono',monospace;
+  padding:4px 8px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.06);
+  color:var(--ink3);
+  border:1px solid rgba(255,255,255,0.08);
+}
+.job-btn.selected .job-badge{
+  background:rgba(94,231,162,0.16);
+  color:#caffde;
+  border-color:rgba(94,231,162,0.18);
+}
+.job-name{font-size:13.8px;font-weight:600;color:#f3f7fc;line-height:1.35;letter-spacing:-0.01em}
+.job-skills{
+  font-size:11px;
+  color:var(--ink3);
+  font-family:'DM Mono',monospace;
+  line-height:1.65;
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.no-roles{
+  grid-column:1/-1;
+  padding:1rem;
+  border:1px dashed rgba(255,255,255,0.10);
+  border-radius:16px;
+  text-align:center;
+  color:var(--ink3);
+  font-size:13px;
+  background:rgba(255,255,255,0.03);
+}
+
+.analyze-btn{
+  width:100%;
+  padding:1rem;
+  background:linear-gradient(135deg, #46d695 0%, #28c7b2 100%);
+  color:#07140f;
+  border:none;
+  border-radius:16px;
+  font-family:'Outfit',sans-serif;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  letter-spacing:0.01em;
+  transition:all 0.2s ease;
+  box-shadow:
+    0 18px 36px rgba(40,199,178,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.28);
+}
+.analyze-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:
+    0 24px 44px rgba(40,199,178,0.24),
+    inset 0 1px 0 rgba(255,255,255,0.28);
+}
+.analyze-btn:active{transform:scale(0.99)}
+.analyze-btn:disabled{opacity:0.7;cursor:not-allowed}
+
+.status-msg{
+  display:none;
+  margin-top:0.9rem;
+  padding:0.9rem 1rem;
+  border-radius:14px;
+  font-size:13px;
+  border:1px solid rgba(255,255,255,0.08);
+  backdrop-filter:blur(10px);
+}
+.status-msg.success{
+  display:block;
+  background:rgba(94,231,162,0.10);
+  border-color:rgba(94,231,162,0.18);
+  color:#bff8d7;
+}
+.status-msg.error{
+  display:block;
+  background:rgba(255,122,122,0.10);
+  border-color:rgba(255,122,122,0.18);
+  color:#ffc0c0;
+}
+
+.results-hidden{display:none}
+
+.score-hero{
+  display:flex;
+  align-items:center;
+  gap:1.5rem;
+  padding:1.25rem;
+  background:rgba(94,231,162,0.08);
+  border:1px solid rgba(94,231,162,0.14);
+  border-radius:16px;
+  margin-bottom:1.25rem;
+}
+.score-ring{position:relative;width:80px;height:80px;flex-shrink:0}
+.score-ring svg{transform:rotate(-90deg)}
+.score-ring .score-num{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Serif Display',serif;
+  font-size:22px;color:var(--accent)
+}
+.score-info h3{font-size:15px;font-weight:600;color:#cffff0;margin-bottom:4px}
+.score-info p{font-size:13px;color:var(--ink2);line-height:1.5}
+
+.skills-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
+.skill-group h4{
+  font-size:12px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  color:var(--ink3);
+  margin-bottom:8px
+}
+.skill-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-family:'DM Mono',monospace;
+  font-weight:500
+}
+.tag.have{background:rgba(94,231,162,0.12);color:#c7ffe0}
+.tag.miss{background:rgba(255,122,122,0.12);color:#ffc1c1}
+.tag.req{background:rgba(255,255,255,0.06);color:var(--ink2)}
+.empty-tag{font-size:12.5px;color:var(--ink3);font-style:italic;padding:4px 0}
+
+.bar-chart{margin-top:0.5rem}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.bar-label{font-size:12.5px;font-weight:500;color:var(--ink2);width:120px;flex-shrink:0;font-family:'DM Mono',monospace}
+.bar-track{flex:1;height:10px;background:rgba(255,255,255,0.06);border-radius:20px;overflow:hidden}
+.bar-fill{height:100%;border-radius:20px;transition:width 0.8s cubic-bezier(.23,1,.32,1)}
+.bar-val{font-size:12px;color:var(--ink3);width:40px;text-align:right;flex-shrink:0}
+
+.recommendation{
+  background:rgba(246,199,106,0.08);
+  border:1px solid rgba(246,199,106,0.18);
+  border-radius:16px;
+  padding:1rem 1.1rem;
+  margin-top:1.25rem
+}
+.recommendation h4{font-size:13px;font-weight:600;color:#f8d487;margin-bottom:6px}
+.recommendation ul{padding-left:1rem}
+.recommendation li{font-size:12.5px;color:#f1ddb1;line-height:1.7}
+
+.feedback-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem}
+.feedback-box{
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:16px;
+  padding:1rem;
+  background:rgba(255,255,255,0.03)
+}
+.feedback-box h4{
+  font-size:12px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  color:var(--ink3);
+  margin-bottom:8px
+}
+.feedback-box ul{padding-left:1rem}
+.feedback-box li{font-size:12.5px;color:var(--ink2);line-height:1.7}
+
+@media(max-width:700px){
+  .feedback-grid{grid-template-columns:1fr}
+}
+@media(max-width:500px){
+  .skills-row{grid-template-columns:1fr}
+  .header{padding:2rem 1.2rem 1.2rem}
+  .main{padding:1.2rem}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-icon">
+    <svg viewBox="0 0 24 24">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="16" y1="13" x2="8" y2="13"/>
+      <line x1="16" y1="17" x2="8" y2="17"/>
+      <polyline points="10 9 9 9 8 9"/>
+    </svg>
+  </div>
+  <div class="header-text">
+    <h1>SkillSync</h1>
+    <p>Upload or paste your resume, choose a role, and get a realistic skill match instantly.</p>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="card">
+    <div class="card-header">
+      <div class="step">1</div>
+      <h2>Add your resume</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="tab-toggle">
+        <button class="tab-btn active" id="tabUpload" onclick="switchTab('upload')">Upload file</button>
+        <button class="tab-btn" id="tabPaste" onclick="switchTab('paste')">Paste text</button>
+      </div>
+
+      <div id="panelUpload">
+        <input type="file" id="fileInput" accept=".txt,.pdf,.docx" style="display:none" onchange="handleFileSelect(this.files[0])"/>
+        <div class="drop-zone" id="dropZone"
+          onclick="if(!selectedFile) document.getElementById('fileInput').click()"
+          ondragover="event.preventDefault(); if(!selectedFile) this.classList.add('dragover')"
+          ondragleave="this.classList.remove('dragover')"
+          ondrop="event.preventDefault(); this.classList.remove('dragover'); if(!selectedFile) handleFileSelect(event.dataTransfer.files[0])">
+          <div class="dz-icon">📄</div>
+          <div class="dz-title">Drop your resume here</div>
+          <div class="dz-sub">or <span>browse to upload</span> &nbsp;·&nbsp; .txt, .pdf or .docx</div>
+        </div>
+        <div class="file-success" id="fileSuccess">
+          <span class="fs-icon">✅</span>
+          <span class="fs-name" id="fsName"></span>
+          <button class="fs-clear" onclick="clearFile()">Remove</button>
+        </div>
+      </div>
+
+      <div id="panelPaste" style="display:none">
+        <textarea id="resumeText" placeholder="Paste your resume content here — skills, projects, experience, education..."></textarea>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="step">2</div>
+      <h2>Choose a target role</h2>
+    </div>
+    <div class="card-body">
+      <div class="job-role-top">
+        <div class="role-count" id="roleCount">Loading roles...</div>
+        <div class="role-search-wrap">
+          <span class="role-search-icon">🔍</span>
+          <input
+            type="text"
+            id="roleSearch"
+            class="role-search"
+            placeholder="Search job roles..."
+            oninput="renderJobCards(this.value)"
+          />
+        </div>
+      </div>
+      <div class="job-grid" id="jobGrid"></div>
+    </div>
+  </div>
+
+  <button class="analyze-btn" id="analyzeBtn" onclick="runAnalysis()">Analyze my resume →</button>
+  <div id="statusMsg" class="status-msg"></div>
+
+  <div class="card results-hidden" id="resultsCard">
+    <div class="card-header">
+      <div class="step">3</div>
+      <h2>Your results</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="score-hero">
+        <div class="score-ring">
+          <svg width="80" height="80" viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="32" fill="none" stroke="#234737" stroke-width="8"/>
+            <circle id="scoreArc" cx="40" cy="40" r="32" fill="none" stroke="#5ee7a2" stroke-width="8"
+              stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201"
+              style="transition: stroke-dashoffset 1s cubic-bezier(.23,1,.32,1)"/>
+          </svg>
+          <div class="score-num" id="scoreNum">0%</div>
+        </div>
+        <div class="score-info">
+          <h3 id="scoreTitle">Calculating...</h3>
+          <p id="scoreDesc"></p>
+        </div>
+      </div>
+
+      <div class="skills-row">
+        <div class="skill-group">
+          <h4>Skills you have</h4>
+          <div class="skill-tags" id="haveTags"></div>
+        </div>
+        <div class="skill-group">
+          <h4>Skills to learn</h4>
+          <div class="skill-tags" id="missTags"></div>
+        </div>
+      </div>
+
+      <div class="skill-group" style="margin-bottom:1.25rem">
+        <h4>Required for this role</h4>
+        <div class="skill-tags" id="reqTags"></div>
+      </div>
+
+      <div class="skill-group">
+        <h4>Skill match breakdown</h4>
+        <div class="bar-chart" id="barChart"></div>
+      </div>
+
+      <div class="recommendation">
+        <h4>💡 Next steps</h4>
+        <ul id="recList"></ul>
+      </div>
+
+      <div class="feedback-grid">
+        <div class="feedback-box">
+          <h4>Strengths</h4>
+          <ul id="strengthList"></ul>
+        </div>
+        <div class="feedback-box">
+          <h4>Suggestions</h4>
+          <ul id="suggestionList"></ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+const jobs = JSON.parse('{{ jobs | tojson | safe }}');
+let selectedJob = null;
+let activeTab = 'upload';
+let selectedFile = null;
+
+// -------------------- TAB TOGGLE --------------------
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('tabUpload').classList.toggle('active', tab === 'upload');
+  document.getElementById('tabPaste').classList.toggle('active', tab === 'paste');
+  document.getElementById('panelUpload').style.display = tab === 'upload' ? 'block' : 'none';
+  document.getElementById('panelPaste').style.display = tab === 'paste' ? 'block' : 'none';
+  hideStatus();
+}
+
+// -------------------- STATUS --------------------
+function showStatus(message, type = 'success') {
+  const box = document.getElementById('statusMsg');
+  box.textContent = message;
+  box.className = `status-msg ${type}`;
+  box.style.display = 'block';
+}
+
+function hideStatus() {
+  const box = document.getElementById('statusMsg');
+  box.textContent = '';
+  box.className = 'status-msg';
+  box.style.display = 'none';
+}
+
+// -------------------- FILE HANDLING --------------------
+function handleFileSelect(file) {
+  if (!file) return;
+
+  if (selectedFile) {
+    showStatus('Only one file can be uploaded at a time. Remove the current file first.', 'error');
+    return;
+  }
+
+  const allowed = ['txt', 'pdf', 'docx'];
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  if (!allowed.includes(ext)) {
+    showStatus('Please upload a .txt, .pdf, or .docx file.', 'error');
+    return;
+  }
+
+  selectedFile = file;
+  document.getElementById('dropZone').style.display = 'none';
+  const fs = document.getElementById('fileSuccess');
+  fs.style.display = 'flex';
+  document.getElementById('fsName').textContent = file.name;
+  document.getElementById('fileInput').disabled = true;
+  hideStatus();
+}
+
+function clearFile() {
+  selectedFile = null;
+  const fileInput = document.getElementById('fileInput');
+  fileInput.value = '';
+  fileInput.disabled = false;
+  document.getElementById('fileSuccess').style.display = 'none';
+  document.getElementById('dropZone').style.display = 'block';
+  hideStatus();
+}
+
+// -------------------- JOB CARDS --------------------
+const grid = document.getElementById('jobGrid');
+const roleCount = document.getElementById('roleCount');
+
+function renderJobCards(search = '') {
+  const searchTerm = search.toLowerCase().trim();
+  grid.innerHTML = '';
+
+  const entries = Object.entries(jobs).filter(([name, info]) => {
+    const combined = `${name} ${info.skills.join(' ')}`.toLowerCase();
+    return combined.includes(searchTerm);
+  });
+
+  roleCount.textContent = `${entries.length} role${entries.length !== 1 ? 's' : ''} available`;
+
+  if (entries.length === 0) {
+    grid.innerHTML = `<div class="no-roles">No roles found for "<strong>${search}</strong>"</div>`;
+    return;
+  }
+
+  entries.forEach(([name, info]) => {
+    const btn = document.createElement('button');
+    btn.className = 'job-btn' + (selectedJob === name ? ' selected' : '');
+
+    btn.innerHTML = `
+      <div class="job-top">
+        <span class="job-icon">${info.icon || '💼'}</span>
+        <span class="job-badge">${info.level || 'Role'}</span>
+      </div>
+      <div class="job-name">${name}</div>
+      <div class="job-skills">${info.skills.slice(0, 6).join(' • ')}</div>
+    `;
+
+    btn.onclick = () => {
+      selectedJob = name;
+      renderJobCards(document.getElementById('roleSearch').value);
+      hideStatus();
+    };
+
+    grid.appendChild(btn);
+  });
+}
+
+// -------------------- ANALYSIS --------------------
+async function runAnalysis() {
+  hideStatus();
+
+  if (!selectedJob) {
+    showStatus('Please select a target role.', 'error');
+    return;
+  }
+
+  const resumeText = document.getElementById('resumeText').value.trim();
+
+  if (activeTab === 'upload' && !selectedFile) {
+    showStatus('Please upload your resume file first.', 'error');
+    return;
+  }
+
+  if (activeTab === 'paste' && !resumeText) {
+    showStatus('Please paste your resume text first.', 'error');
+    return;
+  }
+
+  const analyzeBtn = document.getElementById('analyzeBtn');
+  analyzeBtn.disabled = true;
+  analyzeBtn.textContent = 'Analyzing...';
+
+  const formData = new FormData();
+  formData.append('job', selectedJob);
+
+  if (activeTab === 'paste') {
+    formData.append('resumeText', resumeText);
+  }
+
+  if (activeTab === 'upload' && selectedFile) {
+    formData.append('resumeFile', selectedFile);
+  }
+
+  try {
+    const response = await fetch('/analyze', {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Analysis failed.');
+    }
+
+    renderResults(data);
+    showStatus('Analysis complete.', 'success');
+
+    selectedJob = null;
+    renderJobCards(document.getElementById('roleSearch').value);
+
+    if (selectedFile) {
+      clearFile();
+    }
+
+    if (activeTab === 'paste') {
+      document.getElementById('resumeText').value = '';
+    }
+
+    setTimeout(() => hideStatus(), 3000);
+
+    setTimeout(() => {
+      document.getElementById('resultsCard').scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }, 200);
+
+  } catch (error) {
+    console.error('Analysis error:', error);
+    showStatus(error.message || 'Something went wrong while analyzing.', 'error');
+  } finally {
+    analyzeBtn.disabled = false;
+    analyzeBtn.textContent = 'Analyze my resume →';
+  }
+}
+
+// -------------------- RESULTS RENDER --------------------
+function renderResults(data) {
+  document.getElementById('resultsCard').classList.remove('results-hidden');
+
+  const score = data.score || 0;
+  const circumference = 201;
+  const offset = circumference - (score / 100) * circumference;
+
+  document.getElementById('scoreNum').textContent = `${score}%`;
+  document.getElementById('scoreArc').style.strokeDashoffset = offset;
+
+  let title = 'Needs Improvement';
+  let desc = 'Your resume needs stronger alignment with this role.';
+
+  if (score >= 80) {
+    title = 'Excellent Match';
+    desc = 'Your resume aligns very strongly with this role.';
+  } else if (score >= 60) {
+    title = 'Good Match';
+    desc = 'You have a solid foundation, with a few important gaps.';
+  } else if (score >= 40) {
+    title = 'Moderate Match';
+    desc = 'You have some relevant skills, but there is room to improve.';
+  }
+
+  document.getElementById('scoreTitle').textContent = title;
+  document.getElementById('scoreDesc').textContent = desc;
+
+  renderTags('haveTags', data.matched_skills || [], 'have', 'No matching skills found');
+  renderTags('missTags', data.missing_skills || [], 'miss', 'No missing skills — nice');
+  renderTags('reqTags', data.required_skills || [], 'req', 'No required skills listed');
+
+  renderBars(data.breakdown || {});
+  renderList('recList', data.recommendations || ['Improve the missing skills and add stronger project evidence.']);
+  renderList('strengthList', data.strengths || ['Shows relevant technical foundation.']);
+  renderList('suggestionList', data.suggestions || ['Add stronger project descriptions and measurable impact.']);
+}
+
+function renderTags(id, items, cls, emptyText) {
+  const container = document.getElementById(id);
+  container.innerHTML = '';
+
+  if (!items.length) {
+    container.innerHTML = `<div class="empty-tag">${emptyText}</div>`;
+    return;
+  }
+
+  items.forEach(item => {
+    const tag = document.createElement('span');
+    tag.className = `tag ${cls}`;
+    tag.textContent = item;
+    container.appendChild(tag);
+  });
+}
+
+function renderBars(breakdown) {
+  const chart = document.getElementById('barChart');
+  chart.innerHTML = '';
+
+  const entries = Object.entries(breakdown);
+
+  if (!entries.length) {
+    chart.innerHTML = `<div class="empty-tag">No breakdown available</div>`;
+    return;
+  }
+
+  entries.forEach(([label, value]) => {
+    const row = document.createElement('div');
+    row.className = 'bar-row';
+
+    row.innerHTML = `
+      <div class="bar-label">${label}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${value}%; background:linear-gradient(90deg,#46d695,#28c7b2)"></div>
+      </div>
+      <div class="bar-val">${value}%</div>
+    `;
+
+    chart.appendChild(row);
+  });
+}
+
+function renderList(id, items) {
+  const ul = document.getElementById(id);
+  ul.innerHTML = '';
+  items.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    ul.appendChild(li);
+  });
+}
+
+// -------------------- INIT --------------------
+renderJobCards();
+</script>
+
+</body>
+</html>
