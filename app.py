@@ -1,9 +1,8 @@
+# app.py
 from flask import Flask, render_template, request, jsonify
 import os
 import re
 from collections import Counter
-
-# File readers
 import PyPDF2
 import docx
 
@@ -11,145 +10,61 @@ app = Flask(__name__)
 
 # -------------------- JOB DATABASE --------------------
 JOBS = {
-    "Frontend Developer": {
-        "icon": "🎨",
-        "skills": ["html", "css", "javascript", "react", "responsive design", "tailwind", "bootstrap", "ui", "git"]
-    },
-    "Backend Developer": {
-        "icon": "⚙️",
-        "skills": ["python", "java", "node.js", "flask", "django", "api", "sql", "mongodb", "git"]
-    },
-    "Full Stack Developer": {
-        "icon": "🧩",
-        "skills": ["html", "css", "javascript", "react", "node.js", "python", "flask", "sql", "git"]
-    },
-    "Data Scientist": {
-        "icon": "📊",
-        "skills": ["python", "pandas", "numpy", "machine learning", "sql", "statistics", "matplotlib", "data analysis"]
-    },
-    "Machine Learning Engineer": {
-        "icon": "🤖",
-        "skills": ["python", "machine learning", "tensorflow", "pytorch", "numpy", "pandas", "deep learning", "sql"]
-    },
-    "AI Engineer": {
-        "icon": "🧠",
-        "skills": ["python", "machine learning", "deep learning", "llm", "nlp", "tensorflow", "pytorch", "api"]
-    },
-    "Python Developer": {
-        "icon": "🐍",
-        "skills": ["python", "flask", "django", "oop", "sql", "api", "git", "debugging"]
-    },
-    "Java Developer": {
-        "icon": "☕",
-        "skills": ["java", "oop", "spring", "hibernate", "sql", "api", "git"]
-    },
-    "C++ Developer": {
-        "icon": "💻",
-        "skills": ["c++", "dsa", "oop", "algorithms", "debugging", "git"]
-    },
-    "Android Developer": {
-        "icon": "📱",
-        "skills": ["java", "kotlin", "android", "xml", "firebase", "api", "ui"]
-    },
-    "Web Developer": {
-        "icon": "🌐",
-        "skills": ["html", "css", "javascript", "react", "flask", "bootstrap", "git"]
-    },
-    "UI/UX Designer": {
-        "icon": "🖌️",
-        "skills": ["figma", "wireframing", "prototyping", "ui", "ux", "typography", "design system"]
-    },
-    "DevOps Engineer": {
-        "icon": "🚀",
-        "skills": ["linux", "docker", "kubernetes", "aws", "ci/cd", "bash", "git", "terraform"]
-    },
-    "Cloud Engineer": {
-        "icon": "☁️",
-        "skills": ["aws", "azure", "gcp", "cloud", "linux", "networking", "docker"]
-    },
-    "Cybersecurity Analyst": {
-        "icon": "🔐",
-        "skills": ["network security", "linux", "ethical hacking", "penetration testing", "wireshark", "python"]
-    },
-    "Software Tester": {
-        "icon": "🧪",
-        "skills": ["manual testing", "selenium", "bug tracking", "test cases", "qa", "automation testing"]
-    },
-    "QA Engineer": {
-        "icon": "✅",
-        "skills": ["qa", "selenium", "automation testing", "test cases", "bug tracking", "api testing"]
-    },
-    "Database Administrator": {
-        "icon": "🗄️",
-        "skills": ["sql", "mysql", "postgresql", "database design", "backup", "optimization"]
-    },
-    "Business Analyst": {
-        "icon": "📈",
-        "skills": ["excel", "sql", "data analysis", "communication", "requirements gathering", "power bi"]
-    },
-    "Data Analyst": {
-        "icon": "📉",
-        "skills": ["excel", "sql", "python", "power bi", "tableau", "data analysis", "statistics"]
-    },
-    "Game Developer": {
-        "icon": "🎮",
-        "skills": ["unity", "c#", "game design", "c++", "physics", "debugging"]
-    },
-    "Embedded Systems Engineer": {
-        "icon": "🔌",
-        "skills": ["c", "c++", "microcontrollers", "embedded systems", "arduino", "iot"]
-    },
-    "IoT Developer": {
-        "icon": "📡",
-        "skills": ["iot", "arduino", "raspberry pi", "embedded systems", "sensors", "c", "python"]
-    },
-    "Blockchain Developer": {
-        "icon": "⛓️",
-        "skills": ["solidity", "ethereum", "web3", "smart contracts", "javascript", "blockchain"]
-    },
-    "AR/VR Developer": {
-        "icon": "🥽",
-        "skills": ["unity", "c#", "3d", "vr", "ar", "game development"]
-    },
-    "Product Manager": {
-        "icon": "📦",
-        "skills": ["product strategy", "roadmap", "communication", "market research", "agile", "analytics"]
-    },
-    "Project Manager": {
-        "icon": "🗂️",
-        "skills": ["project management", "agile", "scrum", "leadership", "communication", "planning"]
-    },
-    "Technical Writer": {
-        "icon": "✍️",
-        "skills": ["documentation", "technical writing", "api docs", "communication", "research"]
-    },
-    "System Administrator": {
-        "icon": "🖥️",
-        "skills": ["linux", "windows server", "networking", "troubleshooting", "security", "bash"]
-    }
+    "Frontend Developer": {"icon":"🎨","skills":["html","css","javascript","react","responsive design","tailwind","bootstrap","ui","git"]},
+    "Backend Developer": {"icon":"⚙️","skills":["python","java","node.js","flask","django","api","sql","mongodb","git"]},
+    "Full Stack Developer": {"icon":"🧩","skills":["html","css","javascript","react","node.js","python","flask","sql","git"]},
+    "Data Scientist": {"icon":"📊","skills":["python","pandas","numpy","machine learning","sql","statistics","matplotlib","data analysis"]},
+    "Machine Learning Engineer": {"icon":"🤖","skills":["python","machine learning","tensorflow","pytorch","numpy","pandas","deep learning","sql"]},
+    "AI Engineer": {"icon":"🧠","skills":["python","machine learning","deep learning","llm","nlp","tensorflow","pytorch","api"]},
+    "Python Developer": {"icon":"🐍","skills":["python","flask","django","oop","sql","api","git","debugging"]},
+    "Java Developer": {"icon":"☕","skills":["java","oop","spring","hibernate","sql","api","git"]},
+    "C++ Developer": {"icon":"💻","skills":["c++","dsa","oop","algorithms","debugging","git"]},
+    "Android Developer": {"icon":"📱","skills":["java","kotlin","android","xml","firebase","api","ui"]},
+    "Web Developer": {"icon":"🌐","skills":["html","css","javascript","react","flask","bootstrap","git"]},
+    "UI/UX Designer": {"icon":"🖌️","skills":["figma","wireframing","prototyping","ui","ux","typography","design system"]},
+    "DevOps Engineer": {"icon":"🚀","skills":["linux","docker","kubernetes","aws","ci/cd","bash","git","terraform"]},
+    "Cloud Engineer": {"icon":"☁️","skills":["aws","azure","gcp","cloud","linux","networking","docker"]},
+    "Cybersecurity Analyst": {"icon":"🔐","skills":["network security","linux","ethical hacking","penetration testing","wireshark","python"]},
+    "Software Tester": {"icon":"🧪","skills":["manual testing","selenium","bug tracking","test cases","qa","automation testing"]},
+    "QA Engineer": {"icon":"✅","skills":["qa","selenium","automation testing","test cases","bug tracking","api testing"]},
+    "Database Administrator": {"icon":"🗄️","skills":["sql","mysql","postgresql","database design","backup","optimization"]},
+    "Business Analyst": {"icon":"📈","skills":["excel","sql","data analysis","communication","requirements gathering","power bi"]},
+    "Data Analyst": {"icon":"📉","skills":["excel","sql","python","power bi","tableau","data analysis","statistics"]},
+    "Game Developer": {"icon":"🎮","skills":["unity","c#","game design","c++","physics","debugging"]},
+    "Embedded Systems Engineer": {"icon":"🔌","skills":["c","c++","microcontrollers","embedded systems","arduino","iot"]},
+    "IoT Developer": {"icon":"📡","skills":["iot","arduino","raspberry pi","embedded systems","sensors","c","python"]},
+    "Blockchain Developer": {"icon":"⛓️","skills":["solidity","ethereum","web3","smart contracts","javascript","blockchain"]},
+    "AR/VR Developer": {"icon":"🥽","skills":["unity","c#","3d","vr","ar","game development"]},
+    "Product Manager": {"icon":"📦","skills":["product strategy","roadmap","communication","market research","agile","analytics"]},
+    "Project Manager": {"icon":"🗂️","skills":["project management","agile","scrum","leadership","communication","planning"]},
+    "Technical Writer": {"icon":"✍️","skills":["documentation","technical writing","api docs","communication","research"]},
+    "System Administrator": {"icon":"🖥️","skills":["linux","windows server","networking","troubleshooting","security","bash"]}
 }
 
 # -------------------- TEXT EXTRACTION --------------------
 def extract_text_from_txt(file):
     return file.read().decode("utf-8", errors="ignore")
 
+import pdfplumber
+
 def extract_text_from_pdf(file):
     try:
-        pdf_reader = PyPDF2.PdfReader(file)
         text = ""
-        for page in pdf_reader.pages:
-            extracted = page.extract_text()
-            if extracted:
-                text += extracted + "\n"
-        return text
+        with pdfplumber.open(file) as pdf:
+            for page in pdf.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + " "
+        # normalize spaces
+        text = re.sub(r'\s+', ' ', text)
+        return text.strip()
     except Exception as e:
         print("PDF extraction error:", e)
         return ""
-
 def extract_text_from_docx(file):
     try:
         doc = docx.Document(file)
-        return "\n".join([para.text for para in doc.paragraphs])
+        return " ".join([para.text for para in doc.paragraphs])
     except Exception as e:
         print("DOCX extraction error:", e)
         return ""
@@ -157,9 +72,7 @@ def extract_text_from_docx(file):
 def extract_resume_text(uploaded_file):
     if not uploaded_file:
         return ""
-
     filename = uploaded_file.filename.lower()
-
     if filename.endswith(".txt"):
         return extract_text_from_txt(uploaded_file)
     elif filename.endswith(".pdf"):
@@ -171,22 +84,20 @@ def extract_resume_text(uploaded_file):
 
 # -------------------- SKILL MATCHING --------------------
 def clean_text(text):
+    # lowercase, remove special chars except + and #
     return re.sub(r'[^a-zA-Z0-9+#.\s]', ' ', text.lower())
 
 def extract_skills_from_resume(resume_text, all_skills):
     resume_text = clean_text(resume_text)
     found = set()
-
     for skill in all_skills:
-        if skill.lower() in resume_text:
+        skill_pattern = r'\b' + re.escape(skill.lower()) + r'\b'
+        if re.search(skill_pattern, resume_text):
             found.add(skill.lower())
-
     return found
 
 def generate_ai_feedback(score, matching, missing, extra):
-    strengths = []
-    suggestions = []
-    recommendations = []
+    strengths, suggestions, recommendations = [], [], []
 
     if len(matching) >= 5:
         strengths.append("Your resume already reflects a strong technical foundation for this role.")
@@ -249,15 +160,26 @@ def analyze():
             final_score, matching_skills, missing_skills, extra_skills
         )
 
+        # Debug
+        print("Resume preview:", resume_text[:200])
+        print("Matching skills:", matching_skills)
+        print("Missing skills:", missing_skills)
+        print("Extra skills:", extra_skills)
+        print("Final score:", final_score)
+
         return jsonify({
             "job": job,
             "required_skills": required_skills,
-            "matching_skills": matching_skills,
+            "matched_skills": matching_skills,
             "missing_skills": missing_skills,
             "extra_skills": extra_skills,
             "system_score": system_score,
             "ai_score": ai_score,
-            "final_score": final_score,
+            "score": final_score,
+            "breakdown": {
+                "System Match": system_score,
+                "AI Evaluation": ai_score
+            },
             "strengths": strengths,
             "suggestions": suggestions,
             "recommendations": recommendations
